@@ -86,7 +86,7 @@ export function IntroAnimation({ onComplete }: IntroAnimationProps) {
             transition={{
               delay: 1.2,
               duration: 0.8,
-              ease: [0.22, 1, 0.36, 1],
+              ease: [0.22, 1, 0.36, 1] as const,
             }}
             className="mt-6 h-px w-32 sm:w-48 origin-left bg-white/50"
           />
