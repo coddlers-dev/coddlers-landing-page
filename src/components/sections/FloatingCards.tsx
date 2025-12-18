@@ -3,15 +3,6 @@
 import { motion } from 'framer-motion';
 import { Code2, CheckCircle2, Slack, Github, Figma, Mail } from 'lucide-react';
 
-const floatAnimation = {
-  y: [0, -8, 0],
-  transition: {
-    duration: 4,
-    repeat: Infinity,
-    ease: 'easeInOut',
-  },
-};
-
 const cardBaseClasses =
   'absolute bg-card rounded-2xl shadow-xl shadow-black/20 border border-card-border backdrop-blur-sm';
 
@@ -36,7 +27,15 @@ function FloatingCard({ delay = 0, className, children }: FloatingCardProps) {
       whileHover={{ scale: 1.02, y: -4 }}
       className={`${cardBaseClasses} ${className}`}
     >
-      <motion.div animate={floatAnimation} transition={{ delay: delay * 0.5 }}>
+      <motion.div
+        animate={{ y: [0, -8, 0] }}
+        transition={{
+          duration: 4,
+          repeat: Infinity,
+          ease: 'easeInOut',
+          delay: delay * 0.5,
+        }}
+      >
         {children}
       </motion.div>
     </motion.div>
