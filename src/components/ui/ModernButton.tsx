@@ -1,10 +1,10 @@
 'use client';
 
 import { forwardRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, type HTMLMotionProps } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
-interface ModernButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ModernButtonProps extends Omit<HTMLMotionProps<'button'>, 'children' | 'className' | 'variant'> {
   children: React.ReactNode;
   className?: string;
   variant?: 'primary' | 'secondary';
@@ -34,9 +34,9 @@ export const ModernButton = forwardRef<HTMLButtonElement, ModernButtonProps>(
         )}
         whileHover={{ scale: 1.02, y: -2 }}
         whileTap={{ scale: 0.98 }}
-        transition={{ 
-          type: "spring", 
-          stiffness: 400, 
+        transition={{
+          type: "spring",
+          stiffness: 400,
           damping: 17,
         }}
         {...props}
@@ -45,12 +45,12 @@ export const ModernButton = forwardRef<HTMLButtonElement, ModernButtonProps>(
         <motion.div
           className="absolute inset-0 rounded-full"
           initial={{ x: '-100%', opacity: 0 }}
-          whileHover={{ 
+          whileHover={{
             x: '100%',
             opacity: 1,
-            transition: { 
-              duration: 0.6, 
-              ease: "easeInOut" 
+            transition: {
+              duration: 0.6,
+              ease: "easeInOut"
             }
           }}
           style={{
@@ -59,7 +59,7 @@ export const ModernButton = forwardRef<HTMLButtonElement, ModernButtonProps>(
               : 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
           }}
         />
-        
+
         {/* Content */}
         <span className="relative z-10 flex items-center gap-2">
           {children}
