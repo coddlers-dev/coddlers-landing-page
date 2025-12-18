@@ -1,0 +1,238 @@
+---
+description: Rules for TypeScript type definitions
+globs: src/types/**
+alwaysApply: false
+---
+
+# TypeScript Types Guidelines
+
+This folder contains **centralized TypeScript type definitions** - shared types, interfaces, and type utilities used across the application.
+
+---
+
+## Purpose
+
+The `types` folder houses:
+- Shared interfaces and types
+- API response types
+- Component prop types (when shared)
+- Utility types
+- Enums and constants types
+
+---
+
+## Core Principles
+
+### Interface vs Type
+
+Use **interfaces** for object shapes (extendable):
+
+```tsx
+// ✅ Use interface for objects
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+// Interfaces can be extended
+interface AdminUser extends User {
+  permissions: string[];
+}
+```
+
+Use **types** for unions, primitives, and computed types:
+
+```tsx
+// ✅ Use type for unions
+type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
+
+// ✅ Use type for computed types
+type UserKeys = keyof User;
+
+// ✅ Use type for primitives
+type ID = string | number;
+```
+
+### Naming Conventions
+
+- **Interfaces/Types:** PascalCase with descriptive names
+- **No prefixes:** Don't use `I` prefix for interfaces
+- **Props suffix:** Use `Props` suffix for component props
+
+```tsx
+// ✅ Good
+interface UserProfile { }
+type ButtonSize = 'sm' | 'md' | 'lg';
+interface ButtonProps { }
+
+// ❌ Bad
+interface IUserProfile { }  // No 'I' prefix
+type buttonSize = string;   // Not PascalCase
+interface buttonProps { }   // Not PascalCase
+```
+
+---
+
+## File Organization
+
+```
+src/types/
+├── index.ts          # Main export file
+├── common.ts         # Common/shared types
+├── components.ts     # Shared component prop types
+└── api.ts            # API response types (if needed)
+```
+
+### Export Pattern
+
+```tsx
+// src/types/index.ts
+export type { User, UserProfile } from './common';
+export type { ButtonProps, CardProps } from './components';
+```
+
+---
+
+## Discriminated Unions
+
+Use discriminated unions for complex conditional types:
+
+```tsx
+// ✅ Excellent for type narrowing
+type NotificationProps =
+  | { type: 'success'; message: string }
+  | { type: 'error'; message: string; retry: () => void }
+  | { type: 'loading' };
+
+function Notification(props: NotificationProps) {
+  switch (props.type) {
+    case 'success':
+      return <div className="text-green-500">{props.message}</div>;
+    case 'error':
+      return (
+        <div className="text-red-500">
+          {props.message}
+          <button onClick={props.retry}>Retry</button>
+        </div>
+      );
+    case 'loading':
+      return <Spinner />;
+  }
+}
+```
+
+---
+
+## Generic Types
+
+Create reusable generic types:
+
+```tsx
+// API Response wrapper
+interface ApiResponse<T> {
+  data: T;
+  status: 'success' | 'error';
+  message?: string;
+}
+
+// Usage
+type UserResponse = ApiResponse<User>;
+type UsersListResponse = ApiResponse<User[]>;
+```
+
+---
+
+## Utility Type Patterns
+
+Leverage TypeScript's built-in utility types:
+
+```tsx
+// Make all properties optional
+type PartialUser = Partial<User>;
+
+// Make all properties required
+type RequiredUser = Required<User>;
+
+// Pick specific properties
+type UserPreview = Pick<User, 'id' | 'name'>;
+
+// Omit specific properties
+type UserWithoutEmail = Omit<User, 'email'>;
+
+// Make properties readonly
+type ReadonlyUser = Readonly<User>;
+```
+
+### Custom Utility Types
+
+```tsx
+// Make specific properties optional
+type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+
+// Make specific properties required
+type RequiredBy<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
+
+// Usage
+type UserWithOptionalEmail = PartialBy<User, 'email'>;
+```
+
+---
+
+## Component Props Patterns
+
+### Extending HTML Elements
+
+```tsx
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'secondary';
+  size?: 'sm' | 'md' | 'lg';
+  isLoading?: boolean;
+}
+```
+
+### Polymorphic Components
+
+```tsx
+type AsProp<C extends React.ElementType> = {
+  as?: C;
+};
+
+type PropsToOmit<C extends React.ElementType, P> = keyof (AsProp<C> & P);
+
+type PolymorphicComponentProp<
+  C extends React.ElementType,
+  Props = {}
+> = React.PropsWithChildren<Props & AsProp<C>> &
+  Omit<React.ComponentPropsWithoutRef<C>, PropsToOmit<C, Props>>;
+```
+
+---
+
+## Const Assertions
+
+Use `as const` for literal types:
+
+```tsx
+// Creates literal type instead of string[]
+const SIZES = ['sm', 'md', 'lg'] as const;
+type Size = typeof SIZES[number]; // 'sm' | 'md' | 'lg'
+
+// Object with literal values
+const THEME = {
+  primary: '#3b82f6',
+  secondary: '#6b7280',
+} as const;
+
+type ThemeColor = typeof THEME[keyof typeof THEME];
+```
+
+---
+
+## Avoid
+
+- ❌ Using `any` - use `unknown` if type is truly unknown
+- ❌ Overly complex nested types (hard to maintain)
+- ❌ Duplicating types (keep them DRY)
+- ❌ Type definitions without exports
+- ❌ Mixing concerns (keep types focused)

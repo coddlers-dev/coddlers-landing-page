@@ -1,0 +1,306 @@
+---
+description: Rules for Next.js App Router pages and layouts
+globs: src/app/**
+alwaysApply: false
+---
+
+# Next.js App Router Guidelines
+
+This folder contains **Next.js App Router** files - pages, layouts, and route-specific components that define the application's routing and page structure.
+
+---
+
+## Purpose
+
+The `app` folder houses:
+- Pages (`page.tsx`)
+- Layouts (`layout.tsx`)
+- Loading states (`loading.tsx`)
+- Error boundaries (`error.tsx`)
+- Not found pages (`not-found.tsx`)
+- Route groups and parallel routes
+- Global styles (`globals.css`)
+
+---
+
+## Core Principles
+
+### Server Components by Default
+
+Next.js 14+ uses Server Components by default. Keep them that way unless client interactivity is required:
+
+```tsx
+// ✅ Good - Server Component (default)
+// src/app/page.tsx
+import { HeroSection } from '@/components/sections/HeroSection';
+import { FeaturesSection } from '@/components/sections/FeaturesSection';
+
+export default function HomePage() {
+  return (
+    <main>
+      <HeroSection />
+      <FeaturesSection />
+    </main>
+  );
+}
+```
+
+### Use 'use client' Sparingly
+
+Only add `'use client'` when you need:
+- React hooks (useState, useEffect, etc.)
+- Browser APIs
+- Event handlers
+- Third-party client libraries
+
+```tsx
+// ✅ Good - Client component only when needed
+'use client';
+
+import { useState } from 'react';
+
+export function InteractiveComponent() {
+  const [isOpen, setIsOpen] = useState(false);
+  // ...
+}
+```
+
+---
+
+## Page Structure
+
+### Root Layout
+
+```tsx
+// src/app/layout.tsx
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import { Header } from '@/components/layout/Header';
+import { Footer } from '@/components/layout/Footer';
+import './globals.css';
+
+const inter = Inter({ subsets: ['latin'] });
+
+export const metadata: Metadata = {
+  title: {
+    default: 'Coddlers - Build Better Software',
+    template: '%s | Coddlers',
+  },
+  description: 'Coddlers helps development teams deliver high-quality code with confidence.',
+  keywords: ['software development', 'code quality', 'team collaboration'],
+  authors: [{ name: 'Coddlers' }],
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://coddlers.com',
+    siteName: 'Coddlers',
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    creator: '@coddlers',
+  },
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en" className="scroll-smooth">
+      <body className={inter.className}>
+        <Header />
+        {children}
+        <Footer />
+      </body>
+    </html>
+  );
+}
+```
+
+### Landing Page
+
+```tsx
+// src/app/page.tsx
+import { HeroSection } from '@/components/sections/HeroSection';
+import { FeaturesSection } from '@/components/sections/FeaturesSection';
+import { AboutSection } from '@/components/sections/AboutSection';
+import { TestimonialsSection } from '@/components/sections/TestimonialsSection';
+import { PricingSection } from '@/components/sections/PricingSection';
+import { CTASection } from '@/components/sections/CTASection';
+
+export default function HomePage() {
+  return (
+    <main className="flex min-h-screen flex-col">
+      <HeroSection />
+      <FeaturesSection />
+      <AboutSection />
+      <TestimonialsSection />
+      <PricingSection />
+      <CTASection />
+    </main>
+  );
+}
+```
+
+---
+
+## Metadata Configuration
+
+### Static Metadata
+
+```tsx
+export const metadata: Metadata = {
+  title: 'About Us | Coddlers',
+  description: 'Learn more about Coddlers and our mission.',
+};
+```
+
+### Dynamic Metadata
+
+```tsx
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const post = await getPost(params.slug);
+  
+  return {
+    title: post.title,
+    description: post.excerpt,
+    openGraph: {
+      images: [post.coverImage],
+    },
+  };
+}
+```
+
+---
+
+## Loading States
+
+```tsx
+// src/app/loading.tsx
+export default function Loading() {
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+    </div>
+  );
+}
+```
+
+---
+
+## Error Handling
+
+```tsx
+// src/app/error.tsx
+'use client';
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center">
+      <h2 className="text-2xl font-bold">Something went wrong!</h2>
+      <button
+        onClick={reset}
+        className="mt-4 rounded bg-primary px-4 py-2 text-white"
+      >
+        Try again
+      </button>
+    </div>
+  );
+}
+```
+
+---
+
+## Not Found Page
+
+```tsx
+// src/app/not-found.tsx
+import Link from 'next/link';
+
+export default function NotFound() {
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center">
+      <h1 className="text-6xl font-bold">404</h1>
+      <p className="mt-4 text-xl text-muted-foreground">Page not found</p>
+      <Link
+        href="/"
+        className="mt-8 rounded bg-primary px-6 py-3 text-white hover:bg-primary/90"
+      >
+        Go Home
+      </Link>
+    </div>
+  );
+}
+```
+
+---
+
+## Global Styles Structure
+
+```css
+/* src/app/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    /* ... more CSS variables */
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    /* ... dark mode variables */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+```
+
+---
+
+## File Naming Conventions
+
+| File | Purpose |
+|------|---------|
+| `page.tsx` | Route page component |
+| `layout.tsx` | Shared layout wrapper |
+| `loading.tsx` | Loading UI |
+| `error.tsx` | Error boundary |
+| `not-found.tsx` | 404 page |
+| `globals.css` | Global styles |
+| `favicon.ico` | Site favicon |
+
+---
+
+## Best Practices
+
+- ✅ Keep pages thin - delegate to section components
+- ✅ Use Server Components for static content
+- ✅ Configure comprehensive metadata
+- ✅ Implement loading and error states
+- ✅ Use route groups for organization when needed
+- ❌ Don't put business logic in pages
+- ❌ Don't create deeply nested component hierarchies
+- ❌ Avoid 'use client' at the page level

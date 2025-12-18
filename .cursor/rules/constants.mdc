@@ -1,0 +1,239 @@
+---
+description: Rules for application constants
+globs: src/constants/**
+alwaysApply: false
+---
+
+# Constants Guidelines
+
+This folder contains **application constants** - static values, configuration objects, and content data that remain unchanged throughout the application lifecycle.
+
+---
+
+## Purpose
+
+The `constants` folder houses:
+- Navigation links
+- Feature lists and content
+- Configuration values
+- Theme/design tokens
+- Static content for landing page sections
+- Social media links
+- Company information
+
+---
+
+## Core Principles
+
+### Immutability with `as const`
+
+Always use `as const` for type-safe constants:
+
+```tsx
+// ✅ Good - Type-safe with literal types
+export const NAV_LINKS = [
+  { label: 'Features', href: '#features' },
+  { label: 'About', href: '#about' },
+  { label: 'Pricing', href: '#pricing' },
+  { label: 'Contact', href: '#contact' },
+] as const;
+
+// Type is inferred as readonly tuple with literal types
+type NavLink = typeof NAV_LINKS[number];
+// { readonly label: "Features" | "About" | ...; readonly href: "#features" | ... }
+```
+
+### Naming Conventions
+
+- **UPPER_SNAKE_CASE** for primitive constants
+- **PascalCase or UPPER_SNAKE_CASE** for objects/arrays
+
+```tsx
+// Primitives
+export const MAX_ITEMS = 10;
+export const API_TIMEOUT = 5000;
+export const COMPANY_NAME = 'Coddlers';
+
+// Objects/Arrays
+export const NAV_LINKS = [...] as const;
+export const SITE_CONFIG = {...} as const;
+```
+
+---
+
+## File Organization
+
+```
+src/constants/
+├── index.ts          # Main export file
+├── navigation.ts     # Nav links, footer links
+├── content.ts        # Landing page content
+├── config.ts         # App configuration
+└── theme.ts          # Design tokens (if not in Tailwind)
+```
+
+### Export Pattern
+
+```tsx
+// src/constants/index.ts
+export * from './navigation';
+export * from './content';
+export * from './config';
+```
+
+---
+
+## Content Structure Examples
+
+### Navigation
+
+```tsx
+// src/constants/navigation.ts
+export const NAV_LINKS = [
+  { label: 'Features', href: '#features' },
+  { label: 'About', href: '#about' },
+  { label: 'Pricing', href: '#pricing' },
+  { label: 'Contact', href: '#contact' },
+] as const;
+
+export const FOOTER_LINKS = {
+  company: [
+    { label: 'About Us', href: '/about' },
+    { label: 'Careers', href: '/careers' },
+    { label: 'Blog', href: '/blog' },
+  ],
+  legal: [
+    { label: 'Privacy Policy', href: '/privacy' },
+    { label: 'Terms of Service', href: '/terms' },
+  ],
+  support: [
+    { label: 'Help Center', href: '/help' },
+    { label: 'Contact', href: '/contact' },
+  ],
+} as const;
+
+export const SOCIAL_LINKS = [
+  { platform: 'twitter', href: 'https://twitter.com/coddlers', icon: 'Twitter' },
+  { platform: 'github', href: 'https://github.com/coddlers', icon: 'Github' },
+  { platform: 'linkedin', href: 'https://linkedin.com/company/coddlers', icon: 'Linkedin' },
+] as const;
+```
+
+### Landing Page Content
+
+```tsx
+// src/constants/content.ts
+export const HERO_CONTENT = {
+  headline: 'Build Better Software, Faster',
+  subheadline: 'Coddlers helps development teams deliver high-quality code with confidence.',
+  primaryCta: 'Start Free Trial',
+  secondaryCta: 'Learn More',
+} as const;
+
+export const FEATURES = [
+  {
+    icon: 'Code',
+    title: 'Clean Code',
+    description: 'Write maintainable, readable code that your team will love.',
+  },
+  {
+    icon: 'Shield',
+    title: 'Secure by Default',
+    description: 'Built-in security best practices to protect your applications.',
+  },
+  {
+    icon: 'Zap',
+    title: 'Lightning Fast',
+    description: 'Optimized performance for the best user experience.',
+  },
+  {
+    icon: 'Users',
+    title: 'Team Collaboration',
+    description: 'Tools designed for seamless team collaboration.',
+  },
+] as const;
+
+export const TESTIMONIALS = [
+  {
+    quote: 'Coddlers transformed how our team writes code.',
+    author: 'Jane Doe',
+    role: 'CTO',
+    company: 'TechCorp',
+    avatar: '/avatars/jane.jpg',
+  },
+  // ... more testimonials
+] as const;
+```
+
+### Site Configuration
+
+```tsx
+// src/constants/config.ts
+export const SITE_CONFIG = {
+  name: 'Coddlers',
+  description: 'Build Better Software, Faster',
+  url: 'https://coddlers.com',
+  ogImage: '/og-image.png',
+  creator: '@coddlers',
+} as const;
+
+export const CONTACT_INFO = {
+  email: 'hello@coddlers.com',
+  phone: '+1 (555) 123-4567',
+  address: '123 Tech Street, San Francisco, CA 94102',
+} as const;
+```
+
+---
+
+## Type Inference from Constants
+
+Derive types from constants for type safety:
+
+```tsx
+// Constants
+export const BUTTON_VARIANTS = ['primary', 'secondary', 'outline', 'ghost'] as const;
+
+// Derive type
+export type ButtonVariant = typeof BUTTON_VARIANTS[number];
+// Result: 'primary' | 'secondary' | 'outline' | 'ghost'
+
+// Use in component
+interface ButtonProps {
+  variant?: ButtonVariant;
+}
+```
+
+---
+
+## Grouping Related Constants
+
+```tsx
+// Group related values in objects
+export const ANIMATION = {
+  duration: {
+    fast: 150,
+    normal: 300,
+    slow: 500,
+  },
+  easing: {
+    default: [0.4, 0, 0.2, 1],
+    in: [0.4, 0, 1, 1],
+    out: [0, 0, 0.2, 1],
+  },
+} as const;
+
+// Usage
+import { ANIMATION } from '@/constants';
+// ANIMATION.duration.fast -> 150
+```
+
+---
+
+## Avoid
+
+- ❌ Mutable constants (always use `as const`)
+- ❌ Business logic in constants files
+- ❌ Constants that change at runtime (use state instead)
+- ❌ Hardcoding values in components (extract to constants)
+- ❌ Duplicating constant values across files

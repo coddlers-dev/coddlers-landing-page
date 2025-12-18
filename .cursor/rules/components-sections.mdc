@@ -1,0 +1,219 @@
+---
+description: Rules for landing page section components
+globs: src/components/sections/**
+alwaysApply: false
+---
+
+# Section Components Guidelines
+
+This folder contains **landing page section components** - larger compositional components that make up the distinct sections of the landing page.
+
+---
+
+## Purpose
+
+Section components represent major visual blocks of the landing page:
+- Hero Section
+- Features Section
+- About Section
+- Testimonials Section
+- Pricing Section
+- CTA Section
+- FAQ Section
+
+---
+
+## Core Principles
+
+### Composition Over Complexity
+
+Sections should **compose UI components**, not duplicate them:
+
+```tsx
+// ✅ Good - Composes UI components
+import { Button } from '@/components/ui/Button';
+import { Container } from '@/components/ui/Container';
+import { Heading, Text } from '@/components/ui/Typography';
+
+export function HeroSection() {
+  return (
+    <section className="py-20">
+      <Container>
+        <Heading level={1}>Welcome to Coddlers</Heading>
+        <Text>Your subtitle here</Text>
+        <Button variant="primary">Get Started</Button>
+      </Container>
+    </section>
+  );
+}
+```
+
+### Content Separation
+
+Keep content data separate from presentation:
+
+```tsx
+// ✅ Good - Content is externalized
+const features = [
+  { icon: 'code', title: 'Fast Development', description: '...' },
+  { icon: 'shield', title: 'Secure by Default', description: '...' },
+];
+
+export function FeaturesSection() {
+  return (
+    <section>
+      {features.map((feature) => (
+        <FeatureCard key={feature.title} {...feature} />
+      ))}
+    </section>
+  );
+}
+```
+
+Consider moving content to `constants/` for larger datasets.
+
+---
+
+## Component Structure
+
+```tsx
+// 1. Imports
+import { motion } from 'framer-motion';
+import { Container } from '@/components/ui/Container';
+import { Button } from '@/components/ui/Button';
+
+// 2. Content/Data (or import from constants)
+const sectionContent = {
+  headline: 'Build Better Software',
+  subheadline: 'We help teams deliver quality code faster.',
+  cta: 'Start Free Trial',
+};
+
+// 3. Animation variants (if using Framer Motion)
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 },
+  },
+};
+
+// 4. Component
+export function HeroSection() {
+  return (
+    <section id="hero" className="relative min-h-screen flex items-center">
+      <Container>
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {/* Section content */}
+        </motion.div>
+      </Container>
+    </section>
+  );
+}
+```
+
+---
+
+## Responsive Design Requirements
+
+All sections must be responsive across breakpoints:
+
+```tsx
+<section className={cn(
+  // Mobile first
+  'py-12 px-4',
+  // Tablet
+  'md:py-16 md:px-6',
+  // Desktop
+  'lg:py-24 lg:px-8'
+)}>
+```
+
+### Grid Patterns
+
+```tsx
+// Feature cards grid
+<div className={cn(
+  'grid gap-6',
+  'grid-cols-1',           // Mobile: 1 column
+  'md:grid-cols-2',        // Tablet: 2 columns
+  'lg:grid-cols-3'         // Desktop: 3 columns
+)}>
+```
+
+---
+
+## Animation Guidelines
+
+Use Framer Motion for scroll-triggered and entrance animations:
+
+```tsx
+import { motion } from 'framer-motion';
+
+// Fade up animation
+const fadeUpVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.5, ease: 'easeOut' }
+  },
+};
+
+// Stagger children
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 },
+  },
+};
+```
+
+### Performance Considerations
+
+- Use `whileInView` for scroll-triggered animations
+- Add `viewport={{ once: true }}` to animate only once
+- Keep animations subtle (< 500ms duration)
+- Use `transform` and `opacity` for GPU-accelerated animations
+
+---
+
+## Section Naming Convention
+
+- Use descriptive names: `HeroSection`, `FeaturesSection`
+- Suffix with "Section" for clarity
+- File names match component names: `HeroSection.tsx`
+
+---
+
+## Section IDs for Navigation
+
+Add `id` attributes for smooth scrolling navigation:
+
+```tsx
+<section id="features" className="...">
+  {/* Content */}
+</section>
+```
+
+This enables navigation links like:
+```tsx
+<a href="#features">Features</a>
+```
+
+---
+
+## Checklist for New Sections
+
+- [ ] Uses semantic `<section>` element
+- [ ] Has unique `id` for navigation
+- [ ] Responsive across all breakpoints
+- [ ] Composes UI components (doesn't duplicate)
+- [ ] Content is separated from presentation
+- [ ] Animations are performant and accessible
+- [ ] Follows consistent spacing patterns

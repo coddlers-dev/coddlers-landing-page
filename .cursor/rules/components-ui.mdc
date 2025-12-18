@@ -1,0 +1,185 @@
+---
+description: Rules for base/atomic UI components in the ui folder
+globs: src/components/ui/**
+alwaysApply: false
+---
+
+# UI Components Guidelines
+
+This folder contains **base/atomic UI components** - the building blocks of the application. These are reusable, generic components that have no knowledge of the business domain.
+
+---
+
+## Purpose
+
+UI components are the smallest, most reusable pieces of the interface:
+- Buttons, Inputs, Cards, Badges
+- Typography components (Heading, Text)
+- Icons wrappers
+- Loading spinners, skeletons
+
+---
+
+## Core Principles
+
+### Single Responsibility
+
+Each UI component should do **one thing only**:
+
+```tsx
+// ✅ Good - Single purpose
+export function Button({ children, variant, ...props }: ButtonProps) {
+  return <button className={cn(buttonVariants({ variant }))} {...props}>{children}</button>;
+}
+
+// ❌ Bad - Does too much
+export function Button({ children, fetchData, showModal, ...props }) {
+  // Business logic doesn't belong here
+}
+```
+
+### No Business Logic
+
+UI components must be **pure presentation**:
+- No API calls
+- No business calculations
+- No domain-specific logic
+- Only receive data via props, emit events via callbacks
+
+### Reusability First
+
+Design components to work in any context:
+
+```tsx
+// ✅ Good - Generic and reusable
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+}
+
+// ❌ Bad - Too specific
+interface SubmitOrderButtonProps {
+  orderId: string;
+  onOrderSubmit: () => void;
+}
+```
+
+---
+
+## Component Structure
+
+```tsx
+// 1. Imports
+import { cn } from '@/lib/utils';
+
+// 2. Types/Interfaces
+interface CardProps {
+  children: React.ReactNode;
+  className?: string;
+  variant?: 'default' | 'elevated';
+}
+
+// 3. Component
+export function Card({ children, className, variant = 'default' }: CardProps) {
+  return (
+    <div className={cn(
+      'rounded-lg border bg-card p-6',
+      variant === 'elevated' && 'shadow-lg',
+      className
+    )}>
+      {children}
+    </div>
+  );
+}
+
+// 4. Sub-components (if needed)
+export function CardHeader({ children, className }: { children: React.ReactNode; className?: string }) {
+  return <div className={cn('mb-4', className)}>{children}</div>;
+}
+
+export function CardContent({ children, className }: { children: React.ReactNode; className?: string }) {
+  return <div className={cn('', className)}>{children}</div>;
+}
+```
+
+---
+
+## Props Guidelines
+
+### Always Extend Native HTML Attributes
+
+```tsx
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'secondary';
+}
+```
+
+### Use Discriminated Unions for Variants
+
+```tsx
+type ButtonProps = 
+  | { variant: 'link'; href: string }
+  | { variant: 'button'; onClick: () => void };
+```
+
+### Accept className for Customization
+
+Always allow consumers to add custom styles:
+
+```tsx
+export function Badge({ className, ...props }: BadgeProps) {
+  return <span className={cn('base-classes', className)} {...props} />;
+}
+```
+
+---
+
+## Tailwind Class Organization
+
+Use the `cn()` utility and organize classes consistently:
+
+```tsx
+className={cn(
+  // 1. Layout & Display
+  'flex items-center justify-center',
+  // 2. Sizing
+  'h-10 px-4',
+  // 3. Typography
+  'text-sm font-medium',
+  // 4. Colors & Background
+  'bg-primary text-primary-foreground',
+  // 5. Borders & Shadows
+  'rounded-md border',
+  // 6. States & Transitions
+  'hover:bg-primary/90 transition-colors',
+  // 7. Conditional classes
+  disabled && 'opacity-50 cursor-not-allowed',
+  // 8. External className
+  className
+)}
+```
+
+---
+
+## File Naming
+
+- One component per file
+- Use PascalCase: `Button.tsx`, `Card.tsx`, `Input.tsx`
+- Create `index.ts` to export all components:
+
+```ts
+// src/components/ui/index.ts
+export { Button } from './Button';
+export { Card, CardHeader, CardContent } from './Card';
+export { Input } from './Input';
+```
+
+---
+
+## Accessibility Checklist
+
+- [ ] Interactive elements are focusable
+- [ ] Buttons have accessible names
+- [ ] Form inputs have associated labels
+- [ ] Color is not the only indicator of state
+- [ ] Keyboard navigation works properly

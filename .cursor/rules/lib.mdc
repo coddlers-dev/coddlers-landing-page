@@ -1,0 +1,240 @@
+---
+description: Rules for utility functions and helpers
+globs: src/lib/**
+alwaysApply: false
+---
+
+# Library/Utilities Guidelines
+
+This folder contains **utility functions and helpers** - pure, reusable functions that provide common functionality across the application.
+
+---
+
+## Purpose
+
+The `lib` folder houses:
+- Utility functions (formatting, validation, etc.)
+- Helper functions
+- Third-party library configurations
+- Custom hooks (if applicable)
+
+---
+
+## Core Principles
+
+### Pure Functions
+
+Utilities should be **pure functions** whenever possible:
+
+```tsx
+// ✅ Good - Pure function
+export function formatCurrency(amount: number, currency = 'USD'): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency,
+  }).format(amount);
+}
+
+// ❌ Bad - Side effects
+let cache = {};
+export function formatCurrency(amount: number): string {
+  cache[amount] = /* ... */; // Side effect!
+  return /* ... */;
+}
+```
+
+### Single Responsibility
+
+Each function should do **one thing only**:
+
+```tsx
+// ✅ Good - Single purpose
+export function capitalize(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export function slugify(str: string): string {
+  return str.toLowerCase().replace(/\s+/g, '-');
+}
+
+// ❌ Bad - Does too much
+export function processString(str: string, type: 'capitalize' | 'slugify' | 'truncate') {
+  // Multiple responsibilities
+}
+```
+
+### Type Safety
+
+Always define explicit types:
+
+```tsx
+// ✅ Good - Explicit types
+export function clamp(value: number, min: number, max: number): number {
+  return Math.min(Math.max(value, min), max);
+}
+
+// ❌ Bad - Implicit any
+export function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
+```
+
+---
+
+## Essential Utilities
+
+### cn() - Class Name Utility
+
+The most important utility for Tailwind CSS:
+
+```tsx
+// src/lib/utils.ts
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+export function cn(...inputs: ClassValue[]): string {
+  return twMerge(clsx(inputs));
+}
+```
+
+**Usage:**
+
+```tsx
+import { cn } from '@/lib/utils';
+
+<button className={cn(
+  'px-4 py-2 rounded',
+  isActive && 'bg-primary',
+  className
+)} />
+```
+
+---
+
+## File Organization
+
+```
+src/lib/
+├── utils.ts          # General utilities (cn, etc.)
+├── formatting.ts     # Date, number, string formatting
+├── validation.ts     # Validation helpers
+└── animation.ts      # Animation utilities/variants
+```
+
+### Export Pattern
+
+```tsx
+// src/lib/utils.ts
+export function cn(...inputs: ClassValue[]): string { /* ... */ }
+export function sleep(ms: number): Promise<void> { /* ... */ }
+
+// Or use named exports in index
+// src/lib/index.ts
+export { cn, sleep } from './utils';
+export { formatDate, formatCurrency } from './formatting';
+```
+
+---
+
+## Documentation Standards
+
+Document complex utilities with JSDoc:
+
+```tsx
+/**
+ * Formats a date to a human-readable string
+ * @param date - The date to format
+ * @param options - Intl.DateTimeFormatOptions
+ * @returns Formatted date string
+ * @example
+ * formatDate(new Date()) // "December 17, 2025"
+ * formatDate(new Date(), { month: 'short' }) // "Dec 17, 2025"
+ */
+export function formatDate(
+  date: Date,
+  options?: Intl.DateTimeFormatOptions
+): string {
+  return new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    ...options,
+  }).format(date);
+}
+```
+
+---
+
+## Common Utility Patterns
+
+### Debounce
+
+```tsx
+export function debounce<T extends (...args: unknown[]) => unknown>(
+  func: T,
+  wait: number
+): (...args: Parameters<T>) => void {
+  let timeoutId: ReturnType<typeof setTimeout>;
+  
+  return (...args: Parameters<T>) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func(...args), wait);
+  };
+}
+```
+
+### Throttle
+
+```tsx
+export function throttle<T extends (...args: unknown[]) => unknown>(
+  func: T,
+  limit: number
+): (...args: Parameters<T>) => void {
+  let inThrottle = false;
+  
+  return (...args: Parameters<T>) => {
+    if (!inThrottle) {
+      func(...args);
+      inThrottle = true;
+      setTimeout(() => (inThrottle = false), limit);
+    }
+  };
+}
+```
+
+### Sleep/Delay
+
+```tsx
+export function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+```
+
+---
+
+## Testing Considerations
+
+Utilities should be easy to test:
+
+```tsx
+// Easy to test - no dependencies
+describe('formatCurrency', () => {
+  it('formats USD correctly', () => {
+    expect(formatCurrency(1000)).toBe('$1,000.00');
+  });
+  
+  it('handles zero', () => {
+    expect(formatCurrency(0)).toBe('$0.00');
+  });
+});
+```
+
+---
+
+## Avoid
+
+- ❌ Side effects (mutating external state)
+- ❌ Depending on global variables
+- ❌ Async operations (unless explicitly needed)
+- ❌ DOM manipulation (keep utilities framework-agnostic)
+- ❌ Business logic (belongs in components/hooks)
