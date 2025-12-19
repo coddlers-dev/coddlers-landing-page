@@ -101,7 +101,7 @@ function CodeCard() {
   return (
     <FloatingCard
       delay={0.3}
-      className="left-[5%] top-[20%] p-4 w-64 -rotate-6 hidden lg:block"
+      className="left-[5%] top-[20%] p-4 w-72 -rotate-6 hidden lg:block"
     >
       <div className="flex items-center gap-2 mb-3">
         <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
@@ -109,8 +109,8 @@ function CodeCard() {
         </div>
         <span className="text-sm font-medium text-neutral-100">Código Limpo</span>
       </div>
-      <div className="space-y-2 font-mono text-xs">
-        <div className="flex items-center gap-2">
+      <div className="space-y-2 font-mono text-xs overflow-hidden">
+        <div className="flex items-center gap-2 flex-wrap">
           <span className="text-purple-400">const</span>
           <span className="text-neutral-200">construirSoftwareIncrivel</span>
           <span className="text-neutral-500">=</span>
@@ -122,6 +122,11 @@ function CodeCard() {
 }
 
 function TaskCard() {
+  // Timing: Card finishes appearing at ~1.1s (delay 0.5s + duration 0.6s)
+  const cardAppearTime = 1.1;
+  const firstCheckDelay = cardAppearTime + 0.3; // 1.4s
+  const secondCheckDelay = firstCheckDelay + 0.9; // 2.3s
+
   return (
     <FloatingCard
       delay={0.5}
@@ -129,21 +134,104 @@ function TaskCard() {
     >
       <div className="text-sm font-medium text-neutral-100 mb-3">Progresso de Hoje</div>
       <div className="space-y-2">
+        {/* First task - Revisão de design */}
         <div className="flex items-center gap-2">
-          <CheckCircle2 size={16} className="text-green-400" />
-          <span className="text-sm text-neutral-300">Revisão de design</span>
+          <div className="relative w-4 h-4">
+            {/* Unchecked circle - fades out */}
+            <motion.div
+              initial={{ opacity: 1 }}
+              animate={{ opacity: 0 }}
+              transition={{ delay: firstCheckDelay, duration: 0.2 }}
+              className="absolute inset-0 w-4 h-4 rounded-full border-2 border-neutral-600"
+            />
+            {/* Checkmark - fades in and scales */}
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{
+                delay: firstCheckDelay,
+                type: 'spring',
+                stiffness: 200,
+                damping: 15,
+              }}
+              className="absolute inset-0 flex items-center justify-center"
+            >
+              <CheckCircle2 size={16} className="text-green-400" />
+            </motion.div>
+          </div>
+          <motion.span
+            initial={{ color: 'rgb(115, 115, 115)' }} // neutral-500
+            animate={{ color: 'rgb(212, 212, 212)' }} // neutral-300
+            transition={{
+              delay: firstCheckDelay,
+              duration: 0.5,
+              ease: 'easeInOut'
+            }}
+            className="text-sm"
+          >
+            Revisão de design
+          </motion.span>
         </div>
+
+        {/* Second task - Implementação de código */}
         <div className="flex items-center gap-2">
-          <CheckCircle2 size={16} className="text-green-400" />
-          <span className="text-sm text-neutral-300">Implementação de código</span>
+          <div className="relative w-4 h-4">
+            {/* Unchecked circle - fades out */}
+            <motion.div
+              initial={{ opacity: 1 }}
+              animate={{ opacity: 0 }}
+              transition={{ delay: secondCheckDelay, duration: 0.2 }}
+              className="absolute inset-0 w-4 h-4 rounded-full border-2 border-neutral-600"
+            />
+            {/* Checkmark - fades in and scales */}
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{
+                delay: secondCheckDelay,
+                type: 'spring',
+                stiffness: 200,
+                damping: 15,
+              }}
+              className="absolute inset-0 flex items-center justify-center"
+            >
+              <CheckCircle2 size={16} className="text-green-400" />
+            </motion.div>
+          </div>
+          <motion.span
+            initial={{ color: 'rgb(115, 115, 115)' }} // neutral-500
+            animate={{ color: 'rgb(212, 212, 212)' }} // neutral-300
+            transition={{
+              delay: secondCheckDelay,
+              duration: 0.5,
+              ease: 'easeInOut'
+            }}
+            className="text-sm"
+          >
+            Implementação de código
+          </motion.span>
         </div>
+
+        {/* Third task - Unchecked (stays disabled) */}
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 rounded-full border-2 border-neutral-600" />
           <span className="text-sm text-neutral-500">Testes & QA</span>
         </div>
       </div>
+
+      {/* Progress bar */}
       <div className="mt-3 h-2 bg-neutral-800 rounded-full overflow-hidden">
-        <div className="h-full w-2/3 bg-gradient-to-r from-blue-500 to-blue-400 rounded-full" />
+        <motion.div
+          initial={{ width: '0%' }}
+          animate={{ width: ['0%', '33.333%', '33.333%', '66.666%'] }}
+          transition={{
+            times: [0, 0.28, 0.62, 0.92],
+            duration: 1.5,
+            delay: firstCheckDelay,
+            ease: [0.4, 0, 0.2, 1],
+          }}
+          className="h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full"
+        />
       </div>
     </FloatingCard>
   );

@@ -41,7 +41,7 @@ export function IntroAnimation({ onComplete }: IntroAnimationProps) {
           <DotGrid
             dotSize={5}
             gap={15}
-            baseColor="#271E37"
+            baseColor="#1A1525"
             activeColor="#5220FF"
             proximity={120}
             shockRadius={250}
