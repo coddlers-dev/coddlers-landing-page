@@ -1,6 +1,6 @@
 export const SITE_CONFIG = {
   name: 'Coddlers',
-  description: 'We help companies build better software with confidence.',
+  description: 'Ajudamos empresas a construir softwares melhores com confiança.',
   url: 'https://coddlers.com',
   ogImage: '/og-image.png',
 } as const;

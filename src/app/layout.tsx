@@ -18,25 +18,25 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_CONFIG.url),
   title: {
-    default: `${SITE_CONFIG.name} - Build Better Software`,
+    default: `${SITE_CONFIG.name} - Construa Softwares Melhores`,
     template: `%s | ${SITE_CONFIG.name}`,
   },
   description: SITE_CONFIG.description,
   keywords: [
-    'software development',
-    'custom software',
-    'code quality',
-    'team augmentation',
-    'technical consulting',
-    'web development',
+    'desenvolvimento de software',
+    'software personalizado',
+    'qualidade de código',
+    'aumento de equipe',
+    'consultoria técnica',
+    'desenvolvimento web',
   ],
   authors: [{ name: SITE_CONFIG.name }],
   openGraph: {
     type: 'website',
-    locale: 'en_US',
+    locale: 'pt_BR',
     url: SITE_CONFIG.url,
     siteName: SITE_CONFIG.name,
-    title: `${SITE_CONFIG.name} - Build Better Software`,
+    title: `${SITE_CONFIG.name} - Construa Softwares Melhores`,
     description: SITE_CONFIG.description,
     images: [
       {
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: `${SITE_CONFIG.name} - Build Better Software`,
+    title: `${SITE_CONFIG.name} - Construa Softwares Melhores`,
     description: SITE_CONFIG.description,
     images: [SITE_CONFIG.ogImage],
   },
@@ -65,7 +65,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth dark" suppressHydrationWarning>
+    <html lang="pt-BR" className="scroll-smooth dark" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning

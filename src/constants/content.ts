@@ -1,8 +1,8 @@
 export const HERO_CONTENT = {
   companyName: 'Coddlers',
-  headline: "Let's build something",
-  headlineAccent: 'great together',
+  headline: 'Vamos construir algo',
+  headlineAccent: 'incrível juntos',
   subheadline:
-    'We transform your ideas into elegant, scalable solutions. Partner with us to ship software you can be proud of.',
-  primaryCta: 'Contact Us',
+    'Transformamos suas ideias em soluções elegantes e escaláveis. Faça parceria conosco para entregar software do qual você se orgulha.',
+  primaryCta: 'Entre em Contato',
 } as const;

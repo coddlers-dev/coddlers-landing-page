@@ -101,7 +101,7 @@ export function IntroAnimation({ onComplete }: IntroAnimationProps) {
             }}
             className="mt-6 text-sm sm:text-base text-neutral-500 tracking-widest uppercase"
           >
-            Build Better Software
+            Construa Softwares Melhores
           </motion.p>
         </motion.div>
       )}
