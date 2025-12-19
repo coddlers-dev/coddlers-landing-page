@@ -34,7 +34,7 @@ export function HeroSection() {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center bg-background overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center bg-background overflow-hidden select-none">
       {/* Interactive dot background */}
       <DotGrid
         dotSize={5}

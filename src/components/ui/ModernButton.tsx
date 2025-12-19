@@ -18,7 +18,7 @@ export const ModernButton = forwardRef<HTMLButtonElement, ModernButtonProps>(
         className={cn(
           'group relative inline-flex items-center justify-center',
           'px-8 py-3.5 text-base font-medium',
-          'rounded-full cursor-pointer overflow-hidden',
+          'rounded-full cursor-pointer overflow-hidden select-none',
           'transition-all duration-300 ease-out',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent',
           variant === 'primary' && [

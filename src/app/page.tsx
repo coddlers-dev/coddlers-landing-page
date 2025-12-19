@@ -23,7 +23,7 @@ export default function HomePage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="min-h-screen overflow-hidden"
+            className="min-h-screen overflow-hidden select-none"
           >
             <HeroSection />
           </motion.main>

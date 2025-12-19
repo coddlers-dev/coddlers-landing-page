@@ -35,7 +35,7 @@ export function IntroAnimation({ onComplete }: IntroAnimationProps) {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.6 }}
-          className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background overflow-hidden"
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background overflow-hidden select-none"
         >
           {/* Interactive dot background - same as main page */}
           <DotGrid
