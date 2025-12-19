@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ModernButton, InteractiveBackground } from '@/components/ui';
+import { ModernButton, DotGrid } from '@/components/ui';
 import { FloatingCards } from './FloatingCards';
 import { HERO_CONTENT, CONTACT_INFO } from '@/constants';
 
@@ -36,7 +36,18 @@ export function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-background overflow-hidden">
       {/* Interactive dot background */}
-      <InteractiveBackground />
+      <DotGrid
+        dotSize={5}
+        gap={15}
+        baseColor="#271E37"
+        activeColor="#5220FF"
+        proximity={120}
+        shockRadius={250}
+        shockStrength={5}
+        resistance={750}
+        returnDuration={1.5}
+        className="z-0"
+      />
 
       {/* Floating decorative cards */}
       <FloatingCards />

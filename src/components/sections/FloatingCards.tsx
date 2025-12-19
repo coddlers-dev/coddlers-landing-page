@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Code2, CheckCircle2, Github, Figma, Mail } from 'lucide-react';
+import { Code2, CheckCircle2, Github, Mail } from 'lucide-react';
 
 // Cursor IDE Logo Component
 function CursorIcon({ size = 20, className = '' }: { size?: number; className?: string }) {
@@ -17,6 +17,45 @@ function CursorIcon({ size = 20, className = '' }: { size?: number; className?: 
       <path
         d="m466.383 137.073-206.469-119.2034c-6.63-3.8287-14.811-3.8287-21.441 0l-206.4586 119.2034c-5.5734 3.218-9.0144 9.169-9.0144 15.615v240.375c0 6.436 3.441 12.397 9.0144 15.615l206.4686 119.203c6.63 3.829 14.811 3.829 21.441 0l206.468-119.203c5.574-3.218 9.015-9.17 9.015-15.615v-240.375c0-6.436-3.441-12.397-9.015-15.615zm-12.969 25.25-199.316 345.223c-1.347 2.326-4.904 1.376-4.904-1.319v-226.048c0-4.517-2.414-8.695-6.33-10.963l-195.7577-113.019c-2.3263-1.347-1.3764-4.905 1.3182-4.905h398.6305c5.661 0 9.199 6.136 6.368 11.041h-.009z"
         fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+// Figma Logo Component
+function FigmaIcon({ size = 20 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size * 1.5}
+      viewBox="0 0 38 57"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M19 28.5c0-5.247 4.253-9.5 9.5-9.5 5.247 0 9.5 4.253 9.5 9.5 0 5.247-4.253 9.5-9.5 9.5-5.247 0-9.5-4.253-9.5-9.5z"
+        fillRule="nonzero"
+        fill="#1abcfe"
+      />
+      <path
+        d="M0 47.5C0 42.253 4.253 38 9.5 38H19v9.5c0 5.247-4.253 9.5-9.5 9.5C4.253 57 0 52.747 0 47.5z"
+        fillRule="nonzero"
+        fill="#0acf83"
+      />
+      <path
+        d="M19 0v19h9.5c5.247 0 9.5-4.253 9.5-9.5C38 4.253 33.747 0 28.5 0H19z"
+        fillRule="nonzero"
+        fill="#ff7262"
+      />
+      <path
+        d="M0 9.5C0 14.747 4.253 19 9.5 19H19V0H9.5C4.253 0 0 4.253 0 9.5z"
+        fillRule="nonzero"
+        fill="#f24e1e"
+      />
+      <path
+        d="M0 28.5C0 33.747 4.253 38 9.5 38H19V19H9.5C4.253 19 0 23.253 0 28.5z"
+        fillRule="nonzero"
+        fill="#a259ff"
       />
     </svg>
   );
@@ -126,8 +165,8 @@ function IntegrationsCard() {
         <div className="w-10 h-10 rounded-xl bg-black flex items-center justify-center">
           <CursorIcon size={20} className="text-white" />
         </div>
-        <div className="w-10 h-10 rounded-xl bg-pink-500/20 flex items-center justify-center">
-          <Figma size={20} className="text-pink-400" />
+        <div className="w-10 h-10 rounded-xl bg-neutral-800 flex items-center justify-center">
+          <FigmaIcon size={14} />
         </div>
       </div>
     </FloatingCard>

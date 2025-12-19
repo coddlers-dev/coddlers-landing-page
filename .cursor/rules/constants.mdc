@@ -178,7 +178,7 @@ export const SITE_CONFIG = {
 } as const;
 
 export const CONTACT_INFO = {
-  email: 'hello@coddlers.com',
+  email: 'contato@coddlers.com',
   phone: '+1 (555) 123-4567',
   address: '123 Tech Street, San Francisco, CA 94102',
 } as const;

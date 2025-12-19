@@ -3,6 +3,6 @@ export const HERO_CONTENT = {
   headline: 'Vamos construir algo',
   headlineAccent: 'incrível juntos',
   subheadline:
-    'Transformamos suas ideias em soluções elegantes e escaláveis. Faça parceria conosco para entregar software do qual você se orgulha.',
+    'Transformamos os desafios do seu dia-a-dia em oportunidades com tecnologia sob medida. Mais produtividade, menos complexidade.',
   primaryCta: 'Entre em Contato',
 } as const;

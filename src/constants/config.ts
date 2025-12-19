@@ -6,7 +6,7 @@ export const SITE_CONFIG = {
 } as const;
 
 export const CONTACT_INFO = {
-  email: 'hello@coddlers.com',
+  email: 'contato@coddlers.com',
 } as const;
 
 export const ANIMATION_CONFIG = {

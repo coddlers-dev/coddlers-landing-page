@@ -44,7 +44,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Dot pattern now handled by InteractiveBackground component */
+/* Dot pattern now handled by DotGrid component */
 
 ::selection {
   background: rgba(101, 68, 171, 0.3);
